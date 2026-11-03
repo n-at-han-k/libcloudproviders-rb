@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# The exporter needs a bus and a GIcon, which is all this example wants from a
+# gem. libcloudproviders itself comes from the repository above rather than from
+# RubyGems: the flake puts ../lib on RUBYLIB, so `require "libcloudproviders"`
+# loads the working tree rather than the last release.
+gem "gio2"
