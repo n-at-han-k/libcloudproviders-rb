@@ -48,18 +48,25 @@ provider = CloudProviders::ProviderExporter.new(connection, BUS_NAME, OBJECT_PAT
 provider.set_name("Ruby Cloud")
 
 # The account is what the file manager draws, one sidebar row each, and the row
-# is labelled with the ACCOUNT's name -- not the provider's. "Ruby Cloud" above
-# is not what appears; "someone@example.com" is. So the number of rows is the
-# number of accounts exported, and a client wanting a single row exports a
-# single account however many things it is actually syncing.
+# is labelled with the ACCOUNT's name -- not the provider's. Setting the
+# provider's name alone leaves the row reading whatever the account is called,
+# which is why this one is named for the service rather than for a user.
 #
-# The name given here becomes an object path segment, so it has to be a valid
-# one; the label is set separately below.
-account = CloudProviders::AccountExporter.new(provider, "someone_at_example_com")
-account.name = "someone@example.com"
+# So the row count is the account count. Export one account and you get one
+# row, however many things are actually being synced behind it; export one per
+# user and the sidebar reads as that many separate clouds.
+#
+# The name passed to the constructor becomes an object path segment, so it has
+# to be a valid one; the label is the name= below.
+account = CloudProviders::AccountExporter.new(provider, "ruby_cloud")
+account.name = "Ruby Cloud"
 # Path must be a real directory: the file manager builds "file://" plus Path.
 account.path = Dir.home
-account.icon = Gio::ThemedIcon.new("folder-remote")
+# A file beside the example rather than a themed name: a themed name only
+# resolves if the icon is installed into a theme the file manager searches, and
+# a client shipping its own brand icon has a file. Gio::ThemedIcon.new("folder-remote")
+# works too where the theme has it.
+account.icon = Gio::FileIcon.new(Gio::File.new_for_path(File.expand_path("ruby-cloud.png", __dir__)))
 account.set_status(CloudProviders::AccountStatus::SYNCING)
 account.set_status_details("Syncing 3 of 12")
 
