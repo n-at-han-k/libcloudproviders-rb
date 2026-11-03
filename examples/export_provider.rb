@@ -47,7 +47,14 @@ connection = Gio.bus_get_sync(Gio::BusType::SESSION)
 provider = CloudProviders::ProviderExporter.new(connection, BUS_NAME, OBJECT_PATH)
 provider.set_name("Ruby Cloud")
 
-# The name becomes an object path segment, so it has to be a valid one.
+# The account is what the file manager draws, one sidebar row each, and the row
+# is labelled with the ACCOUNT's name -- not the provider's. "Ruby Cloud" above
+# is not what appears; "someone@example.com" is. So the number of rows is the
+# number of accounts exported, and a client wanting a single row exports a
+# single account however many things it is actually syncing.
+#
+# The name given here becomes an object path segment, so it has to be a valid
+# one; the label is set separately below.
 account = CloudProviders::AccountExporter.new(provider, "someone_at_example_com")
 account.name = "someone@example.com"
 # Path must be a real directory: the file manager builds "file://" plus Path.
